@@ -175,7 +175,7 @@ TEXT = {
         "regional_pattern": "Regional pattern",
         "factor": "Factor",
         "score": "Score",
-        "comparative_heading": "**Comparative Assessment & Insights**",
+        "comparative_heading": "Comparative Assessment & Insights",
         "preferred_system": "Which system would you prefer to use for daily agricultural decision-making?",
         "system_a": "System A (Direct recommendation only)",
         "system_b": "System B (Recommendation with explanations)",
@@ -242,7 +242,7 @@ TEXT = {
         "regional_pattern": "Mwelekeo wa mkoa",
         "factor": "Kipengele",
         "score": "Alama",
-        "comparative_heading": "**Ulinganisho na Maoni**",
+        "comparative_heading": "Ulinganisho na Maoni",
         "preferred_system": "Ni mfumo gani ungependa kutumia kwa maamuzi ya kilimo ya kila siku?",
         "system_a": "Mfumo A (Pendekezo la moja kwa moja tu)",
         "system_b": "Mfumo B (Pendekezo lenye maelezo)",
@@ -625,8 +625,8 @@ def build_layman_explanation(top_row: pd.Series, language: str) -> str:
         if weak_details:
             explanation += f"Vipengele dhaifu ni {', '.join(weak_details)}, hivyo vinapaswa kukaguliwa kabla ya kuamua. "
         explanation += (
-            "Alama ya juu haimaanishi kuwa zao litafanikiwa kwa uhakika; ina maana kuwa taarifa ulizoingiza "
-            "zinaendana na zao hili kuliko mazao mengine yaliyojaribiwa na programu."
+            "Alama ya juu haimaanishi mafanikio ya uhakika; inaonyesha taarifa ulizoingiza zinaendana na zao hili zaidi "
+            "kuliko mazao mengine yaliyofanyiwa tathmini na programu."
         )
         return explanation
 
@@ -638,8 +638,8 @@ def build_layman_explanation(top_row: pd.Series, language: str) -> str:
     if weak_details:
         explanation += f"The weaker parts are {', '.join(weak_details)}, so those should be checked before deciding. "
     explanation += (
-        "A higher score does not mean the crop is guaranteed to succeed; it means the information entered fits this crop "
-        "better than the other crops tested by the app."
+        "A higher score does not guarantee success; it means the information entered matches this crop better "
+        "than the other crops evaluated by the app."
     )
     return explanation
 
@@ -806,6 +806,7 @@ def show_custom_input_recommender(
             top_row=top_row,
             input_row=input_row,
             question_set=BLACK_BOX_QUESTIONS,
+            include_comments=False,
             language=language,
         )
         if first_saved:
@@ -829,6 +830,7 @@ def show_custom_input_recommender(
             "</div>",
             unsafe_allow_html=True,
         )
+        st.subheader(tr(language, "comparative_heading"))
     else:
         second_saved = show_evaluation_form(
             stage="after_explanation",
@@ -943,6 +945,7 @@ def show_evaluation_form(
     input_row: pd.Series,
     question_set: dict[str, str],
     include_comparative_questions: bool = False,
+    include_comments: bool = True,
     language: str = "English",
 ) -> bool:
     st.subheader(title)
@@ -964,8 +967,9 @@ def show_evaluation_form(
         contradiction_response = None
         helpful_explanation_type = None
         additional_explanation_info = None
+        comments = None
         if include_comparative_questions:
-            st.markdown(tr(language, "comparative_heading"))
+            st.subheader(tr(language, "comparative_heading"))
             preferred_system = st.radio(
                 tr(language, "preferred_system"),
                 [
@@ -998,7 +1002,8 @@ def show_evaluation_form(
                 key=f"{stage}_{region}_additional_explanation_info",
             )
 
-        comments = st.text_area(tr(language, "comments"), key=f"{stage}_{region}_comments")
+        if include_comments:
+            comments = st.text_area(tr(language, "comments"), key=f"{stage}_{region}_comments")
         submitted = st.form_submit_button(f"{tr(language, 'save')} {title}")
 
     if not submitted:
@@ -1051,7 +1056,6 @@ def main() -> None:
         role = st.text_input(tr(language, "role"), value="")
         years_experience = st.number_input(tr(language, "years_experience"), min_value=0, max_value=80, value=0)
         region = st.selectbox(tr(language, "region"), sorted(region_defaults["region_name"].dropna().unique()))
-        st.caption(tr(language, "saved_caption"))
 
     st.title(tr(language, "app_title"))
     st.write(tr(language, "intro"))
