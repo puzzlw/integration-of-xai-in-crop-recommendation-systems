@@ -167,6 +167,7 @@ TEXT = {
         "second_submitted": "Second evaluation submitted. Thank you for completing the assessment.",
         "second_evaluation": "Second Evaluation",
         "second_saved": "Second evaluation saved.",
+        "comparative_saved": "Comparative assessment saved.",
         "rank": "Rank",
         "crop": "Crop",
         "input_score": "Input-based score",
@@ -234,6 +235,7 @@ TEXT = {
         "second_submitted": "Tathmini ya pili imehifadhiwa. Asante kwa kukamilisha tathmini.",
         "second_evaluation": "Tathmini ya Pili",
         "second_saved": "Tathmini ya pili imehifadhiwa.",
+        "comparative_saved": "Tathmini ya kulinganisha imehifadhiwa.",
         "rank": "Nafasi",
         "crop": "Zao",
         "input_score": "Alama kutokana na taarifa",
@@ -831,6 +833,23 @@ def show_custom_input_recommender(
             unsafe_allow_html=True,
         )
         st.subheader(tr(language, "comparative_heading"))
+        if st.session_state.get("comparative_assessment_submitted", False):
+            st.success(tr(language, "comparative_saved"))
+        else:
+            comparative_saved = show_comparative_assessment_form(
+                stage="comparative_assessment",
+                participant_id=participant_id,
+                role=role,
+                years_experience=years_experience,
+                region=region,
+                top_row=top_row,
+                input_row=input_row,
+                language=language,
+            )
+            if comparative_saved:
+                st.session_state["comparative_assessment_submitted"] = True
+                st.success(tr(language, "comparative_saved"))
+                st.rerun()
     else:
         second_saved = show_evaluation_form(
             stage="after_explanation",
@@ -842,7 +861,7 @@ def show_custom_input_recommender(
             top_row=top_row,
             input_row=input_row,
             question_set=XAI_QUESTIONS,
-            include_comparative_questions=True,
+            include_comments=False,
             language=language,
         )
         if second_saved:
@@ -944,7 +963,6 @@ def show_evaluation_form(
     top_row: pd.Series,
     input_row: pd.Series,
     question_set: dict[str, str],
-    include_comparative_questions: bool = False,
     include_comments: bool = True,
     language: str = "English",
 ) -> bool:
@@ -963,45 +981,7 @@ def show_evaluation_form(
             scores[column] = LIKERT_SCORES[selected]
             scores[f"{column}_label"] = selected
 
-        preferred_system = None
-        contradiction_response = None
-        helpful_explanation_type = None
-        additional_explanation_info = None
         comments = None
-        if include_comparative_questions:
-            st.subheader(tr(language, "comparative_heading"))
-            preferred_system = st.radio(
-                tr(language, "preferred_system"),
-                [
-                    tr(language, "system_a"),
-                    tr(language, "system_b"),
-                    tr(language, "no_preference"),
-                ],
-                key=f"{stage}_{region}_preferred_system",
-            )
-            contradiction_response = st.radio(
-                tr(language, "contradiction"),
-                [
-                    tr(language, "trust_anyway"),
-                    tr(language, "reject"),
-                    tr(language, "investigate"),
-                ],
-                key=f"{stage}_{region}_contradiction_response",
-            )
-            helpful_explanation_type = st.radio(
-                tr(language, "helpful_type"),
-                [
-                    tr(language, "text_descriptions"),
-                    tr(language, "visual_charts"),
-                    tr(language, "contrastive"),
-                ],
-                key=f"{stage}_{region}_helpful_explanation_type",
-            )
-            additional_explanation_info = st.text_area(
-                tr(language, "additional_info"),
-                key=f"{stage}_{region}_additional_explanation_info",
-            )
-
         if include_comments:
             comments = st.text_area(tr(language, "comments"), key=f"{stage}_{region}_comments")
         submitted = st.form_submit_button(f"{tr(language, 'save')} {title}")
@@ -1024,6 +1004,74 @@ def show_evaluation_form(
         "regional_prior_score": top_row["regional_prior_score"],
         **{f"input_{key}": value for key, value in input_row.to_dict().items()},
         **scores,
+        "comments": comments,
+    }
+    save_response(row)
+    return True
+
+
+def show_comparative_assessment_form(
+    stage: str,
+    participant_id: str,
+    role: str,
+    years_experience: int,
+    region: str,
+    top_row: pd.Series,
+    input_row: pd.Series,
+    language: str = "English",
+) -> bool:
+    with st.form(f"{stage}_form"):
+        preferred_system = st.radio(
+            tr(language, "preferred_system"),
+            [
+                tr(language, "system_a"),
+                tr(language, "system_b"),
+                tr(language, "no_preference"),
+            ],
+            key=f"{stage}_{region}_preferred_system",
+        )
+        contradiction_response = st.radio(
+            tr(language, "contradiction"),
+            [
+                tr(language, "trust_anyway"),
+                tr(language, "reject"),
+                tr(language, "investigate"),
+            ],
+            key=f"{stage}_{region}_contradiction_response",
+        )
+        helpful_explanation_type = st.radio(
+            tr(language, "helpful_type"),
+            [
+                tr(language, "text_descriptions"),
+                tr(language, "visual_charts"),
+                tr(language, "contrastive"),
+            ],
+            key=f"{stage}_{region}_helpful_explanation_type",
+        )
+        additional_explanation_info = st.text_area(
+            tr(language, "additional_info"),
+            key=f"{stage}_{region}_additional_explanation_info",
+        )
+        comments = st.text_area(tr(language, "comments"), key=f"{stage}_{region}_comments")
+        submitted = st.form_submit_button(f"{tr(language, 'save')} {tr(language, 'comparative_heading')}")
+
+    if not submitted:
+        return False
+
+    row = {
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "participant_id": participant_id,
+        "role": role,
+        "years_experience": years_experience,
+        "language": language,
+        "condition": stage,
+        "region": region,
+        "recommended_crop": top_row["recommended_crop"],
+        "recommendation_score": top_row["input_score"],
+        "environment_score": top_row["environment_score"],
+        "market_score": top_row["market_score"],
+        "regional_prior_score": top_row["regional_prior_score"],
+        **{f"input_{key}": value for key, value in input_row.to_dict().items()},
         "preferred_system": preferred_system,
         "contradiction_response": contradiction_response,
         "helpful_explanation_type": helpful_explanation_type,
