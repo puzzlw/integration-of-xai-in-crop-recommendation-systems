@@ -7,18 +7,27 @@ import pandas as pd
 import streamlit as st
 
 
-def find_base_dir() -> Path:
-    app_dir = Path(__file__).resolve().parent
-    candidates = [app_dir, app_dir.parent, Path.cwd()]
-    for candidate in candidates:
-        if (candidate / "model_outputs").exists():
-            return candidate
-    return app_dir.parent
+def find_repo_root() -> Path:
+    resolved_file_dir = Path(__file__).resolve().parent
+    cwd = Path.cwd()
+    candidates = [resolved_file_dir, cwd]
+    candidates.extend(resolved_file_dir.parents)
+    candidates.extend(cwd.parents)
+
+    seen: set[Path] = set()
+    for path in candidates:
+        if path in seen:
+            continue
+        seen.add(path)
+        if (path / "model_outputs").exists():
+            return path
+
+    return cwd
 
 
-BASE_DIR = find_base_dir()
+BASE_DIR = find_repo_root()
 OUTPUT_DIR = BASE_DIR / "model_outputs"
-RESPONSES_PATH = Path(__file__).resolve().parent / "responses_collected.csv"
+RESPONSES_PATH = BASE_DIR / "responses_collected.csv"
 
 RECOMMENDATIONS_PATH = OUTPUT_DIR / "user_input_hybrid_recommendations.csv"
 XAI_DETAILS_PATH = OUTPUT_DIR / "xai_explanation_details.csv"
