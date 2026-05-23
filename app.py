@@ -7,7 +7,16 @@ import pandas as pd
 import streamlit as st
 
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+def find_base_dir() -> Path:
+    app_dir = Path(__file__).resolve().parent
+    candidates = [app_dir, app_dir.parent, Path.cwd()]
+    for candidate in candidates:
+        if (candidate / "model_outputs").exists():
+            return candidate
+    return app_dir.parent
+
+
+BASE_DIR = find_base_dir()
 OUTPUT_DIR = BASE_DIR / "model_outputs"
 RESPONSES_PATH = Path(__file__).resolve().parent / "responses_collected.csv"
 
