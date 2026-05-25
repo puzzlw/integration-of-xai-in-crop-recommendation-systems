@@ -129,7 +129,9 @@ TEXT = {
             "This is a prototype system that aims to gain your understanding of the outputs "
             "of crop recommendation system. The system contains two parts, each with surveys "
             "at the end, the first one is a regular Crop recommendation system, and the second "
-            "one is an advanced system with Explainable AI. Provide your answers based on how "
+            "one is an advanced system with Explainable AI. The system focuses on four regions; Iringa, Kagera, Kilimanjaro, and Mbeya, "
+            "and takes a closer look at five crops; maize, banana, beans, coffee, and rice/paddy. "
+            "Provide your answers based on how "
             "you understand the systems."
         ),
         "language": "Language",
@@ -403,7 +405,7 @@ def interpretation_for_factor(column: str, language: str = "English") -> str:
             "regional_prior_score": "How common the crop is in similar regional records",
             "soil_ph_mean_score": "Soil pH suitability",
             "temp_mean_score": "Temperature suitability",
-            "rainfall_total_2023_24_score": "Rainfall suitability",
+            "rainfall_total": "Rainfall suitability",
             "soil_n_mean_score": "Nitrogen suitability",
             "soil_p_mean_score": "Phosphorus suitability",
             "soil_k_mean_score": "Potassium suitability",
