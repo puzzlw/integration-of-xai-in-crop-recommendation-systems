@@ -199,8 +199,13 @@ TEXT = {
     "Kiswahili": {
         "app_title": "Tathmini ya Mfumo wa Kupendekeza Mazao",
         "intro": (
-            "Weka taarifa za shamba, angalia pendekezo la kwanza la zao, lifanyie tathmini, "
-            "kisha angalia maelezo na ufanye tathmini tena."
+            "Huu ni mfumo wa mfano ambao unalenga kupata uelewa wako wa matokeo"
+            "ya mfumo wa mapendekezo ya mazao. Mfumo una sehemu mbili, kila moja ikiwa na tafiti"
+            "mwishoni, wa kwanza ni mfumo wa kawaida wa mapendekezo ya Mazao, na wa pili"
+            "Moja ni mfumo wa hali ya juu wenye AI inayoeleweka. Mfumo huu unalenga katika mikoa minne; Iringa, Kagera, Kilimanjaro, na Mbeya,"
+            "na inaangalia kwa karibu mazao matano; mahindi, ndizi, maharage, kahawa, na mpunga/ mpunga."
+            "Toa majibu yako kulingana na jinsi"
+            "unaelewa mifumo."
         ),
         "language": "Lugha",
         "participant": "Mshiriki",
