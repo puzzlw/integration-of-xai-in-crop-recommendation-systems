@@ -814,6 +814,7 @@ def show_custom_input_recommender(
             region=region,
             top_row=top_row,
             input_row=input_row,
+            input_recommendations=input_recommendations,
             question_set=BLACK_BOX_QUESTIONS,
             include_comments=False,
             language=language,
@@ -867,6 +868,7 @@ def show_custom_input_recommender(
             region=region,
             top_row=top_row,
             input_row=input_row,
+            input_recommendations=input_recommendations,
             question_set=XAI_QUESTIONS,
             include_comments=False,
             language=language,
@@ -969,6 +971,7 @@ def show_evaluation_form(
     region: str,
     top_row: pd.Series,
     input_row: pd.Series,
+    input_recommendations: pd.DataFrame,
     question_set: dict[str, str],
     include_comments: bool = True,
     language: str = "English",
@@ -997,7 +1000,6 @@ def show_evaluation_form(
         return False
 
     row = {
-        "timestamp": datetime.now().isoformat(timespec="seconds"),
         "participant_id": participant_id,
         "role": role,
         "years_experience": years_experience,
@@ -1013,7 +1015,10 @@ def show_evaluation_form(
         **scores,
         "comments": comments,
     }
+    timestamp = datetime.now().isoformat(timespec="seconds")
+    row["timestamp"] = timestamp
     save_response(row)
+    save_input_recommendations(input_recommendations, participant_id, timestamp)
     return True
 
 
@@ -1095,6 +1100,23 @@ def save_response(row: dict[str, object]) -> None:
         existing = pd.read_csv(RESPONSES_PATH)
         response = pd.concat([existing, response], ignore_index=True)
     response.to_csv(RESPONSES_PATH, index=False)
+
+
+def save_input_recommendations(
+    input_recommendations: pd.DataFrame,
+    participant_id: str,
+    timestamp: str,
+) -> None:
+    """Save user-generated input recommendations to the recommendations CSV file."""
+    recommendations = input_recommendations.copy()
+    recommendations.insert(0, "timestamp", timestamp)
+    recommendations.insert(1, "participant_id", participant_id)
+    
+    if RECOMMENDATIONS_PATH.exists():
+        existing = pd.read_csv(RECOMMENDATIONS_PATH)
+        recommendations = pd.concat([existing, recommendations], ignore_index=True)
+    
+    recommendations.to_csv(RECOMMENDATIONS_PATH, index=False)
 
 
 def main() -> None:
