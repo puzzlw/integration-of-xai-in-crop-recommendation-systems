@@ -48,7 +48,7 @@ HYBRID_SUITABILITY_RULES = {
     11: {
         "soil_ph_mean": (5.8, 7.2, 4.8, 8.2),
         "temp_mean": (24.0, 32.0, 20.0, 36.0),
-        "rainfall_total_2023_24": (500.0, 1200.0, 300.0, 1800.0),
+        "rainfall_total": (500.0, 1200.0, 300.0, 1800.0),
         "soil_n_mean": (700.0, 1800.0, 300.0, 2600.0),
         "soil_p_mean": (800.0, 2500.0, 300.0, 4000.0),
         "soil_k_mean": (120.0, 700.0, 40.0, 1400.0),
@@ -57,7 +57,7 @@ HYBRID_SUITABILITY_RULES = {
     12: {
         "soil_ph_mean": (5.0, 6.8, 4.2, 7.8),
         "temp_mean": (26.0, 34.0, 22.0, 38.0),
-        "rainfall_total_2023_24": (1000.0, 2200.0, 700.0, 3200.0),
+        "rainfall_total": (1000.0, 2200.0, 700.0, 3200.0),
         "soil_n_mean": (900.0, 2200.0, 400.0, 3000.0),
         "soil_p_mean": (1000.0, 3500.0, 400.0, 5000.0),
         "soil_k_mean": (120.0, 700.0, 40.0, 1400.0),
@@ -66,7 +66,7 @@ HYBRID_SUITABILITY_RULES = {
     31: {
         "soil_ph_mean": (6.0, 7.5, 5.0, 8.2),
         "temp_mean": (22.0, 30.0, 18.0, 34.0),
-        "rainfall_total_2023_24": (600.0, 1200.0, 400.0, 1800.0),
+        "rainfall_total": (600.0, 1200.0, 400.0, 1800.0),
         "soil_n_mean": (700.0, 1800.0, 300.0, 2600.0),
         "soil_p_mean": (900.0, 2500.0, 300.0, 4000.0),
         "soil_k_mean": (120.0, 700.0, 40.0, 1400.0),
@@ -75,7 +75,7 @@ HYBRID_SUITABILITY_RULES = {
     54: {
         "soil_ph_mean": (5.0, 6.5, 4.2, 7.5),
         "temp_mean": (20.0, 28.0, 16.0, 32.0),
-        "rainfall_total_2023_24": (1200.0, 2200.0, 800.0, 3200.0),
+        "rainfall_total": (1200.0, 2200.0, 800.0, 3200.0),
         "soil_n_mean": (900.0, 2000.0, 400.0, 2800.0),
         "soil_p_mean": (800.0, 2500.0, 300.0, 4000.0),
         "soil_k_mean": (120.0, 700.0, 40.0, 1400.0),
@@ -84,7 +84,7 @@ HYBRID_SUITABILITY_RULES = {
     71: {
         "soil_ph_mean": (5.5, 7.0, 4.5, 8.0),
         "temp_mean": (25.0, 34.0, 21.0, 38.0),
-        "rainfall_total_2023_24": (1200.0, 2500.0, 800.0, 3500.0),
+        "rainfall_total": (1200.0, 2500.0, 800.0, 3500.0),
         "soil_n_mean": (900.0, 2200.0, 400.0, 3000.0),
         "soil_p_mean": (1000.0, 3500.0, 400.0, 5000.0),
         "soil_k_mean": (150.0, 1000.0, 50.0, 1800.0),
@@ -95,7 +95,7 @@ HYBRID_SUITABILITY_RULES = {
 HYBRID_ENVIRONMENT_WEIGHTS = {
     "soil_ph_mean": 0.20,
     "temp_mean": 0.20,
-    "rainfall_total_2023_24": 0.20,
+    "rainfall_total": 0.20,
     "soil_n_mean": 0.12,
     "soil_p_mean": 0.12,
     "soil_k_mean": 0.08,
@@ -150,7 +150,7 @@ TEXT = {
         "input_help": "Enter farm and environmental values to generate a crop recommendation.",
         "soil_ph": "Soil pH",
         "temperature": "Mean temperature",
-        "rainfall": "Total rainfall 2023/24",
+        "rainfall": "Total rainfall",
         "bulk_density": "Topsoil bulk density",
         "nitrogen": "Soil nitrogen",
         "phosphorus": "Soil phosphorus",
@@ -223,7 +223,7 @@ TEXT = {
         "input_help": "Weka taarifa za shamba na mazingira ili kupata pendekezo la zao.",
         "soil_ph": "pH ya udongo",
         "temperature": "Wastani wa joto",
-        "rainfall": "Jumla ya mvua 2023/24",
+        "rainfall": "Jumla ya mvua",
         "bulk_density": "Msongamano wa udongo wa juu",
         "nitrogen": "Nitrojeni ya udongo",
         "phosphorus": "Fosforasi ya udongo",
