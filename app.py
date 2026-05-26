@@ -1113,8 +1113,13 @@ def save_input_recommendations(
     recommendations.insert(1, "participant_id", participant_id)
     
     if RECOMMENDATIONS_PATH.exists():
-        existing = pd.read_csv(RECOMMENDATIONS_PATH)
-        recommendations = pd.concat([existing, recommendations], ignore_index=True)
+        try:
+            existing = pd.read_csv(RECOMMENDATIONS_PATH)
+            if not existing.empty:
+                recommendations = pd.concat([existing, recommendations], ignore_index=True)
+        except (pd.errors.EmptyDataError, pd.errors.ParserError):
+            # File exists but is empty or corrupted, start fresh
+            pass
     
     recommendations.to_csv(RECOMMENDATIONS_PATH, index=False)
 
